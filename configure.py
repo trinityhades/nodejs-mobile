@@ -47,7 +47,7 @@ from utils import SearchFiles
 parser = argparse.ArgumentParser()
 
 valid_os = ('win', 'mac', 'solaris', 'freebsd', 'openbsd', 'linux',
-            'android', 'aix', 'cloudabi', 'os400', 'ios')
+            'android', 'aix', 'cloudabi', 'os400', 'ios', 'tvos')
 valid_arch = ('arm', 'arm64', 'ia32', 'mips', 'mipsel', 'mips64el', 'ppc',
               'ppc64', 'x64', 'x86', 'x86_64', 's390x', 'riscv64', 'loong64')
 valid_arm_float_abi = ('soft', 'softfp', 'hard')
@@ -872,6 +872,11 @@ parser.add_argument('--ios-simulator',
     dest='ios_simulator',
     help=argparse.SUPPRESS)
 
+parser.add_argument('--tvos-simulator',
+  action='store_true',
+  dest='tvos_simulator',
+  help=argparse.SUPPRESS)
+
 (options, args) = parser.parse_known_args()
 
 # Expand ~ in the install prefix now, it gets written to multiple files.
@@ -1262,9 +1267,13 @@ def configure_node_lib_files(o):
   o['variables']['node_library_files'] = SearchFiles('lib', 'js')
 
 def configure_node(o):
-  if options.dest_os == 'ios':
+  if options.dest_os in ('ios', 'tvos'):
     o['variables']['OS'] = 'ios'
     o['variables']['iossim'] = b(options.ios_simulator)
+    o['variables']['tvos'] = b(options.dest_os == 'tvos')
+    o['variables']['tvossim'] = b(options.tvos_simulator)
+    if options.dest_os == 'tvos' and options.ios_simulator:
+      error('--ios-simulator cannot be used with --dest-os=tvos; use --tvos-simulator')
   if options.dest_os == 'android':
     o['variables']['OS'] = 'android'
   o['variables']['node_prefix'] = options.prefix
@@ -2070,7 +2079,7 @@ check_compiler(output)
 # leveraging gyp's GetFlavor function
 flavor_params = {}
 if options.dest_os:
-  flavor_params['flavor'] = options.dest_os
+  flavor_params['flavor'] = 'ios' if options.dest_os == 'tvos' else options.dest_os
 flavor = GetFlavor(flavor_params)
 
 configure_node(output)

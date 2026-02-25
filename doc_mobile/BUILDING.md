@@ -107,7 +107,7 @@ pod 'NodeMobile', :git => 'https://github.com/janeasystems/nodejs-mobile.git'
 
 ## Building the iOS .framework library on macOS:
 
-### 1) Clone this repo and check out the `main` branch:
+### 1) Clone this repo and check out the `main` branch (tvOS build):
 
 ```sh
 git clone https://github.com/nodejs-mobile/nodejs-mobile
@@ -127,3 +127,26 @@ The helper script builds the `tools/ios-framework/NodeMobile.xcodeproj` Xcode pr
   - The framework to run on iOS devices: `out_ios/Release-iphoneos/NodeMobile.framework`
   - The framework to run on the iOS simulator: `out_ios/Release-iphonesimulator/NodeMobile.framework`
   - The universal framework, that runs on iOS devices and simulators: `out_ios/Release-universal/NodeMobile.framework`
+
+## Building the tvOS .framework library on macOS:
+
+### 1) Clone this repo and check out the `main` branch:
+
+```sh
+git clone https://github.com/nodejs-mobile/nodejs-mobile
+cd nodejs-mobile
+git checkout main
+```
+
+### 2) Run the tvOS helper script:
+
+```sh
+./tools/tvos_framework_prepare.sh
+```
+
+That script configures Node.js for `--dest-os=tvos`, builds static libraries for Apple TV device (`arm64`) and simulator (`arm64` and `x64`), then builds the `NodeMobile-tvOS` target from `tools/ios-framework/NodeMobile.xcodeproj`.
+
+The helper script emits:
+  - Device framework: `out_tvos/appletvos-arm64/Release-appletvos/NodeMobile-tvOS.framework`
+  - Simulator framework: `out_tvos/appletvsimulator-universal/NodeMobile-tvOS.framework`
+  - XCFramework: `out_tvos/NodeMobile-tvOS.xcframework`

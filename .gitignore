@@ -169,3 +169,6 @@ __pycache__
 
 # === Rules for C++ development ===
 compile_commands.json
+
+# GitShift personal account configuration
+**/github-accounts.json

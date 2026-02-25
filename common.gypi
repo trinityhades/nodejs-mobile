@@ -625,6 +625,13 @@
           }],
         ],
         'conditions': [
+          ['tvos=="true"', {
+            'xcode_settings': {
+              'IPHONEOS_DEPLOYMENT_TARGET': '10.0',
+              'TVOS_DEPLOYMENT_TARGET': '13.0',
+              'TARGETED_DEVICE_FAMILY': '3',
+            },
+          }],
           ['target_arch=="ia32"', {
             'xcode_settings': {'ARCHS': ['i386']},
           }],
@@ -657,10 +664,22 @@
               'CLANG_CXX_LIBRARY': 'libc++',
             },
           }],
-          ['target_arch=="x64" or target_arch=="ia32" or (target_arch=="arm64" and iossim=="true")', {
-            'xcode_settings': { 'SDKROOT': 'iphonesimulator' },
+          ['tvos=="true"', {
+            'conditions': [
+              ['tvossim=="true"', {
+                'xcode_settings': { 'SDKROOT': 'appletvsimulator' },
+              }, {
+                'xcode_settings': { 'SDKROOT': 'appletvos', 'ENABLE_BITCODE': 'YES' },
+              }],
+            ],
           }, {
-            'xcode_settings': { 'SDKROOT': 'iphoneos', 'ENABLE_BITCODE': 'YES' },
+            'conditions': [
+              ['target_arch=="x64" or target_arch=="ia32" or (target_arch=="arm64" and iossim=="true")', {
+                'xcode_settings': { 'SDKROOT': 'iphonesimulator' },
+              }, {
+                'xcode_settings': { 'SDKROOT': 'iphoneos', 'ENABLE_BITCODE': 'YES' },
+              }],
+            ],
           }],
         ],
       }],

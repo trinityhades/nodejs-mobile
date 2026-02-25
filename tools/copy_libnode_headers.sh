@@ -5,16 +5,18 @@ set -e
 SCRIPT_DIR="$(dirname "$BASH_SOURCE")"
 
 if [ $# -ne 1 ]; then
-  echo "Requires either the string 'ios' or the string 'android' as argument"
+  echo "Requires one of: 'ios', 'tvos' or 'android' as argument"
   exit 1
 fi
 
 if [ $1 == "ios" ]; then
   OUT_DIR=out_ios
+elif [ $1 == "tvos" ]; then
+  OUT_DIR=out_tvos
 elif [ $1 == "android" ]; then
   OUT_DIR=out_android
 else
-  echo "Requires either the string 'ios' or the string 'android' as argument"
+  echo "Requires one of: 'ios', 'tvos' or 'android' as argument"
   exit 1
 fi
 
@@ -31,7 +33,7 @@ cp config.gypi $HEADERS/config.gypi
 # openssl headers
 mkdir -p $HEADERS/openssl/archs
 cp deps/openssl/openssl/include/openssl/*.h $HEADERS/openssl/
-if [ $1 == "ios" ]; then
+if [ $1 == "ios" ] || [ $1 == "tvos" ]; then
   rsync -am --include='*.h' -f 'hide,! */' \
     -f '- aix64*' \
     -f '- BSD*' \
